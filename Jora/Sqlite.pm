@@ -29,4 +29,23 @@ sub delete_task {
 
 }
 
+sub modify_task {
+	my ($name, $subject, $description) = (shift, shift, shift);
+	my %fields;
+	
+	if($subject) {
+		$fields{subject} = $subject;
+	}
+	if($description) {
+		$fields{description} = $description;
+	}
+
+	%fields or croak ("Modify task: No fields specified");
+
+	my $query = $dbh->prepare("UPDATE $Jora::Config::Config{'sqlite.tasks'} SET " . join(", ", map { "$_ = '$fields{$_}'" } keys %fields) . " WHERE name = '$name'");
+	print Dumper($query);
+	
+	$query->execute() or croak "Can't execute statement: $DBI::errstr";
+}
+
 1;

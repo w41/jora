@@ -6,6 +6,7 @@ use Getopt::Long qw(GetOptions);
 use Jora::Commands::Command;
 use Jora::Commands::CreateTask;
 use Jora::Commands::DeleteTask;
+use Jora::Commands::ModifyTask;
 use Jora::Commands::ShowHelp;
 use Data::Dumper;
 use Moose;
@@ -19,6 +20,7 @@ Jora::Sqlite->initialize();
 
 my %commands = ("create" => Jora::Commands::CreateTask->meta(),
 		"delete" => Jora::Commands::DeleteTask->meta(),
+		"modify" => Jora::Commands::ModifyTask->meta(),
 		"help" => Jora::Commands::ShowHelp->meta());
 
 my $cmd;
