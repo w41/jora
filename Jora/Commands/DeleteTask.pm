@@ -18,8 +18,8 @@ has 'name' => (
 );
 
 around BUILDARGS => sub {
-	my ($orig, $class, $name) = (shift, shift, shift);
-	return $class->$orig(@_, name => $name);
+	my ($orig, $class, $argv) = (shift, shift, shift);
+	return $class->$orig(@_, name => shift $argv);
 };
 
 sub execute {

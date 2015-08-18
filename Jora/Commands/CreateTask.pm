@@ -23,9 +23,10 @@ has ['subject', 'description'] => (
 );
 
 around BUILDARGS => sub {
-	my ($orig, $class, $name) = (shift, shift, shift);
-	my ($subject, $description);
-	GetOptionsFromArray(\@_, "s=s" => \$subject, "d=s" => \$description);
+	print "child buildargs: ", Dumper(@_);
+	my ($orig, $class, $argv) = (shift, shift, shift);
+	my ($name, $subject, $description) = (shift @$argv, "", "");
+	GetOptionsFromArray($argv, "s=s" => \$subject, "d=s" => \$description);
 	print Dumper($subject, $description);
 	return $class->$orig(@_, name => $name, subject => $subject, description => $description);
 };

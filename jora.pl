@@ -29,8 +29,7 @@ if($commands{$cmd}) {
 	for my $attr ($commands{$cmd}->get_all_attributes) {
 		print $attr->name, "\n";
 	}
-	my $derp = $commands{$cmd}->name->new(@ARGV, id => 1);
-	say $derp->id;
+	my $derp = $commands{$cmd}->name->new(\@ARGV, id => 1);
 	$derp->execute;
 } else {
 	croak "Command $cmd not found, try 'help'."; 
