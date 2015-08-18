@@ -18,14 +18,15 @@ sub initialize {
 
 sub create_task {
 	my ($name, $subject, $description) = (shift, shift, shift);
-	print "name = $name\n";
-
 	my $query = $dbh->prepare("INSERT INTO $Jora::Config::Config{'sqlite.tasks'}(name, subject, description) VALUES ('$name', '$subject', '$description')");
 	$query->execute() or croak "Can't execute statement: $DBI::errstr";
 }
 
 sub delete_task {
 	my $name = shift;
+	my $query = $dbh->prepare("DELETE FROM $Jora::Config::Config{'sqlite.tasks'} WHERE name = '$name'");
+	$query->execute() or croak "Can't execute statement: $DBI::errstr";
+
 }
 
 1;

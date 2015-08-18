@@ -5,6 +5,7 @@ use v5.14;
 use Getopt::Long qw(GetOptions);
 use Jora::Commands::Command;
 use Jora::Commands::CreateTask;
+use Jora::Commands::DeleteTask;
 use Data::Dumper;
 use Moose;
 use Carp;
@@ -15,8 +16,8 @@ use Jora::Sqlite;
 Jora::Config->initialize();
 Jora::Sqlite->initialize();
 
-
-my %commands = ("create" => Jora::Commands::CreateTask->meta());
+my %commands = ("create" => Jora::Commands::CreateTask->meta(),
+		"delete" => Jora::Commands::DeleteTask->meta());
 
 my $cmd;
 $cmd = shift or croak ("Command unspecified, try 'help'.");
