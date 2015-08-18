@@ -22,23 +22,32 @@ has ['subject', 'description'] => (
 	isa => 'Maybe[Str]',
 );
 
+has ['assigned_user_id'] => (
+	is => 'rw',
+	isa => 'Maybe[Int]',
+);
+
+has ['author_id'] => (
+	is => 'ro',
+	isa => 'Int',
+	required => 1,
+);
+
 around BUILDARGS => sub {
-	print "child buildargs: ", Dumper(@_);
 	my ($orig, $class, $argv) = (shift, shift, shift);
-	my ($name, $subject, $description) = (shift @$argv);
-	GetOptionsFromArray($argv, "s=s" => \$subject, "d=s" => \$description);
-	print Dumper($subject, $description);
-	return $class->$orig(@_, name => $name, subject => $subject, description => $description);
+	my ($name, $subject, $description, $assigned_user_id, $author_id) = (shift @$argv, undef, undef, undef, undef);
+	GetOptionsFromArray($argv, "s|subject=s" => \$subject, "d|desc|description=s" => \$description,
+				   "u|user|assigned|assigned_user_id=i" => \$assigned_user_id,
+				   "a|author|author_id=i" => \$author_id);
+	return $class->$orig(@_, name => $name, subject => $subject, description => $description,
+				 assigned_user_id => $assigned_user_id, author_id => $author_id);
 };
 
-sub BUILD {
-	print Dumper(shift);
-}
-
 sub execute {
-	my $self = shift;
-	print Dumper($self);
-	Jora::Sqlite::create_task($self->name, $self->subject, $self->description);
+	my $self = { %{$_[0]} };
+	delete $self->{id};
+	defined $self->{$_} or delete $self->{$_} for keys %$self;
+	Jora::Sqlite::create_task($self);
 }
 
 1;

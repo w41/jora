@@ -17,8 +17,9 @@ sub initialize {
 }
 
 sub create_task {
-	my ($name, $subject, $description) = (shift, shift, shift);
-	my $query = $dbh->prepare("INSERT INTO $Jora::Config::Config{'sqlite.tasks'}(name, subject, description) VALUES ('$name', '$subject', '$description')");
+	my $task = shift;
+	my $query = $dbh->prepare("INSERT INTO $Jora::Config::Config{'sqlite.tasks'}(" . (join ", ", keys %$task) . 
+			  ") VALUES (" . ( join ", ", map { "'$_'" } values %$task ) . ")");
 	$query->execute() or croak "Can't execute statement: $DBI::errstr";
 }
 
@@ -30,19 +31,12 @@ sub delete_task {
 }
 
 sub modify_task {
-	my ($name, $subject, $description) = (shift, shift, shift);
-	my %fields;
-	
-	if($subject) {
-		$fields{subject} = $subject;
-	}
-	if($description) {
-		$fields{description} = $description;
-	}
+	my $task = shift;
+	my $name = $task->{name};
+	delete local $task->{name};
 
-	%fields or croak ("Modify task: No fields specified");
-
-	my $query = $dbh->prepare("UPDATE $Jora::Config::Config{'sqlite.tasks'} SET " . join(", ", map { "$_ = '$fields{$_}'" } keys %fields) . " WHERE name = '$name'");
+	my $query = $dbh->prepare("UPDATE $Jora::Config::Config{'sqlite.tasks'} SET " .
+			join(", ", map { "$_ = '$task->{$_}'" } keys %$task) . " WHERE name = '$name'");
 	print Dumper($query);
 	
 	$query->execute() or croak "Can't execute statement: $DBI::errstr";

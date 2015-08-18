@@ -22,16 +22,34 @@ has ['subject', 'description'] => (
 	isa => 'Maybe[Str]',
 );
 
+has ['assigned_user_id'] => (
+	is => 'rw',
+	isa => 'Maybe[Int]',
+);
+
+has ['author_id'] => (
+	is => 'ro',
+	isa => 'Maybe[Int]',
+);
+
 around BUILDARGS => sub {
 	my ($orig, $class, $argv) = (shift, shift, shift);
-	my ($name, $subject, $description) = (shift @$argv);
-	GetOptionsFromArray($argv, "s=s" => \$subject, "d=s" => \$description);
-	return $class->$orig(@_, name => $name, subject => $subject, description => $description);
+	my ($name, $subject, $description, $assigned_user_id, $author_id) = (shift @$argv, undef, undef, undef, undef);
+	GetOptionsFromArray($argv, "s|subject=s" => \$subject, "d|desc|description=s" => \$description,
+				   "u|user|assigned|assigned_user_id=i" => \$assigned_user_id,
+				   "a|author|author_id=i" => \$author_id);
+	return $class->$orig(@_, name => $name, subject => $subject, description => $description,
+				 assigned_user_id => $assigned_user_id, author_id => $author_id);
 };
 
 sub execute {
-	my $self = shift;
-	Jora::Sqlite::modify_task($self->name, $self->subject, $self->description);
+	my $self = { %{$_[0]} };
+	print Dumper($self);
+	delete $self->{id};
+	defined $self->{$_} or delete $self->{$_} for keys %$self;
+	print Dumper($self);
+	Jora::Sqlite::modify_task($self);
+	print Dumper($self);
 }
 
 1;

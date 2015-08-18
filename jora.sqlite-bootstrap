@@ -1,4 +1,4 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE tasks (id integer primary key, name varchar(255) unique, subject text, description text);
+CREATE TABLE tasks (id integer primary key, name varchar(255) unique, subject text, description text, assigned_user_id integer, author_id integer);
 COMMIT;
