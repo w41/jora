@@ -7,35 +7,46 @@ use Jora::Commands::Command;
 use Jora::Commands::CreateTask;
 use Jora::Commands::DeleteTask;
 use Jora::Commands::ModifyTask;
+use Jora::Commands::GetTaskInfo;
 use Jora::Commands::ShowHelp;
 use Data::Dumper;
 use Moose;
 use Carp;
 use Jora::Config;
 use Jora::Sqlite;
+use Scalar::Util;
 
 Jora::Config->initialize();
 Jora::Sqlite->initialize();
 
 my %commands = (
-        "create" => Jora::Commands::CreateTask->meta(),
-        "delete" => Jora::Commands::DeleteTask->meta(),
-        "modify" => Jora::Commands::ModifyTask->meta(),
-        "help"   => Jora::Commands::ShowHelp->meta()
+        "task" => {
+                "create" => Jora::Commands::CreateTask->meta(),
+                "delete" => Jora::Commands::DeleteTask->meta(),
+                "modify" => Jora::Commands::ModifyTask->meta(),
+                "task"   => Jora::Commands::GetTaskInfo->meta(),
+        },
+        "help" => Jora::Commands::ShowHelp->meta(),
 );
 
-my $cmd;
-$cmd = shift or croak("Command unspecified, try 'help'.");
-print $cmd, "\n";
+my $cmd_or_category;
+$cmd_or_category = shift or croak("Command unspecified, try 'help'.");
+print $cmd_or_category, "\n";
 
 # print Dumper(%commands);
 
-if ( $commands{$cmd} ) {
-        for my $attr ( $commands{$cmd}->get_all_attributes ) {
-                print $attr->name, "\n";
+if ( $commands{$cmd_or_category} ) {
+        if ( blessed( $commands{$cmd_or_category} ) ) {
+                $commands{$cmd_or_category}->name->new( \@ARGV, id => 1 )
+                  ->execute;
+        } else {
+                my $cmd_name = shift;
+                my $cmd      = $commands{$cmd_or_category}{$cmd_name};
+                $cmd
+                  or croak
+                  "Command $cmd_or_category $cmd_name not found, try 'help'.";
+                $cmd->name->new( \@ARGV, id => 1 )->execute;
         }
-        my $derp = $commands{$cmd}->name->new( \@ARGV, id => 1 );
-        $derp->execute;
 } else {
-        croak "Command $cmd not found, try 'help'.";
+        croak "Command $cmd_or_category not found, try 'help'.";
 }
