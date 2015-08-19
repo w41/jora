@@ -43,11 +43,13 @@ sub modify_task {
         my $name = $task->{name};
         delete local $task->{name};
 
+        grep { $_ eq $name } keys %{ get_tasks() }
+          or croak "Task doesn't exist.";
+
         my $query =
           $dbh->prepare( "UPDATE $Jora::Config::Config{'sqlite.tasks'} SET "
                   . join( ", ", map { "$_ = '$task->{$_}'" } keys %$task )
                   . " WHERE name = '$name'" );
-        print Dumper($query);
 
         $query->execute() or croak "Can't execute statement: $DBI::errstr";
 }
