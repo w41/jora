@@ -24,7 +24,7 @@ my %commands = (
                 "create" => Jora::Commands::CreateTask->meta(),
                 "delete" => Jora::Commands::DeleteTask->meta(),
                 "modify" => Jora::Commands::ModifyTask->meta(),
-                "task"   => Jora::Commands::GetTaskInfo->meta(),
+                "info"   => Jora::Commands::GetTaskInfo->meta(),
         },
         "help" => Jora::Commands::ShowHelp->meta(),
 );

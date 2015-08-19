@@ -8,6 +8,7 @@ use DBI;
 use DBD::SQLite;
 use Carp;
 use Jora::Config;
+use Data::Dumper;
 
 my $dbh;
 
@@ -16,6 +17,30 @@ sub initialize {
                 "dbi:SQLite:dbname=$Jora::Config::Config{'sqlite.filename'}",
                 "", "", { RaiseError => 1 } )
           or croak $DBI::errstr;
+}
+
+sub get_tasks {
+        my $query =
+          $dbh->prepare("SELECT * FROM $Jora::Config::Config{'sqlite.tasks'}");
+        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+
+        my $retval;
+
+        while ( local $_ = $query->fetchrow_hashref ) {
+                $retval->{ $_->{name} } = $_;
+        }
+
+        return $retval;
+}
+
+sub get_task_info {
+        my $name  = shift;
+        my $query = $dbh->prepare(
+"SELECT * FROM $Jora::Config::Config{'sqlite.tasks'} WHERE name = '$name'"
+        );
+        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+
+        return ( $name, \$query->fetchrow_hashref );
 }
 
 sub create_task {
