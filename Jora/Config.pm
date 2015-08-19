@@ -17,7 +17,7 @@ our %Config;
 #}
 
 sub initialize {
-	Config::Simple->import_from("jora.cfg", \%Config);	
+        Config::Simple->import_from( "jora.cfg", \%Config );
 }
 
 1;
