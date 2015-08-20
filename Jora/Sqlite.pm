@@ -109,4 +109,8 @@ sub modify_task {
         $query->execute() or croak "Can't execute statement: $DBI::errstr";
 }
 
+sub create_user {
+        return create_entity( shift, "sqlite.users" );
+}
+
 1;

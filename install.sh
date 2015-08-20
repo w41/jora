@@ -4,6 +4,7 @@ cat >jora.cfg <<EOF
 [sqlite]
 filename=jora.sqlite
 tasks=tasks
+users=users
 EOF
  
 
