@@ -40,11 +40,11 @@ sub get_task_info {
         );
         $query->execute() or croak "Can't execute statement: $DBI::errstr";
 
-        return ( $name, \$query->fetchrow_hashref );
+        return ( $name, $query->fetchrow_hashref );
 }
 
 sub task_exists {
-        return ${ [ get_task_info(shift) ]->[1] };
+        return [ get_task_info(shift) ]->[1];
 }
 
 sub create_task {
