@@ -43,6 +43,10 @@ sub get_task_info {
         return ( $name, \$query->fetchrow_hashref );
 }
 
+sub task_exists {
+        return ${ [ get_task_info(shift) ]->[1] };
+}
+
 sub create_task {
         my $task = shift;
         my $query =
@@ -55,7 +59,10 @@ sub create_task {
 }
 
 sub delete_task {
-        my $name  = shift;
+        my $name = shift;
+
+        task_exists($name) or croak "Task doesn't exist.";
+
         my $query = $dbh->prepare(
 "DELETE FROM $Jora::Config::Config{'sqlite.tasks'} WHERE name = '$name'"
         );
@@ -64,17 +71,18 @@ sub delete_task {
 }
 
 sub modify_task {
-        my $task = shift;
-        my $name = $task->{name};
-        delete local $task->{name};
+        my $task          = shift;
+        my $original_name = $task->{original_name};
+        delete local $task->{original_name};
 
-        grep { $_ eq $name } keys %{ get_tasks() }
-          or croak "Task doesn't exist.";
+        task_exists($original_name) or croak "Task doesn't exist.";
+        task_exists( $task->{name} )
+          and croak "Task '$task->{name}' already exists.";
 
         my $query =
           $dbh->prepare( "UPDATE $Jora::Config::Config{'sqlite.tasks'} SET "
                   . join( ", ", map { "$_ = '$task->{$_}'" } keys %$task )
-                  . " WHERE name = '$name'" );
+                  . " WHERE name = '$original_name'" );
 
         $query->execute() or croak "Can't execute statement: $DBI::errstr";
 }

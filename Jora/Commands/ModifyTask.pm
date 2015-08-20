@@ -11,7 +11,7 @@ use Data::Dumper;
 
 extends 'Jora::Commands::Command';
 
-has 'name' => (
+has 'original_name' => (
         is       => 'ro',
         isa      => 'Str',
         required => 1,
@@ -32,24 +32,32 @@ has ['author_id'] => (
         isa => 'Maybe[Int]',
 );
 
+has ['name'] => (
+        is  => 'ro',
+        isa => 'Maybe[Str]',
+);
+
 around BUILDARGS => sub {
         my ( $orig, $class, $argv ) = ( shift, shift, shift );
-        my ( $name, $subject, $description, $assigned_user_id, $author_id ) =
-          ( shift @$argv, undef, undef, undef, undef );
+        my ( $original_name, $subject, $description, $assigned_user_id,
+                $author_id, $name )
+          = ( shift @$argv, undef, undef, undef, undef, undef );
         GetOptionsFromArray(
                 $argv,
                 "s|subject=s"                        => \$subject,
                 "d|desc|description=s"               => \$description,
                 "u|user|assigned|assigned_user_id=i" => \$assigned_user_id,
-                "a|author|author_id=i"               => \$author_id
+                "a|author|author_id=i"               => \$author_id,
+                "n|name|newname=s"                   => \$name
         );
         return $class->$orig(
                 @_,
-                name             => $name,
+                original_name    => $original_name,
                 subject          => $subject,
                 description      => $description,
                 assigned_user_id => $assigned_user_id,
-                author_id        => $author_id
+                author_id        => $author_id,
+                name             => $name
         );
 };
 
