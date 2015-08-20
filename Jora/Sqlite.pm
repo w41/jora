@@ -19,9 +19,48 @@ sub initialize {
           or croak $DBI::errstr;
 }
 
-sub get_tasks {
+sub create_entity {
+        my ( $entity, $table ) = ( shift, shift );
         my $query =
-          $dbh->prepare("SELECT * FROM $Jora::Config::Config{'sqlite.tasks'}");
+          $dbh->prepare( "INSERT INTO $Jora::Config::Config{$table}("
+                  . ( join ", ", keys %$entity )
+                  . ") VALUES ("
+                  . ( join ", ", map { "'$_'" } values %$entity )
+                  . ")" );
+        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+}
+
+sub get_entity_info {
+        my ( $entity_name, $field, $table ) = ( shift, shift, shift );
+        my $query = $dbh->prepare(
+"SELECT * FROM $Jora::Config::Config{$table} WHERE $field = '$entity_name'"
+        );
+        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+
+        return ( $entity_name, $query->fetchrow_hashref );
+}
+
+sub entity_exists {
+        return [ get_entity_info( shift, shift, shift ) ]->[1];
+}
+
+sub delete_entity {
+        my ( $entity_name, $field, $table ) = ( shift, shift, shift );
+
+        entity_exists( $entity_name, $field, $table )
+          or croak "Entity doesn't exist.";
+
+        my $query = $dbh->prepare(
+"DELETE FROM $Jora::Config::Config{$table} WHERE $field = '$entity_name'"
+        );
+        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+
+}
+
+sub get_all_entities {
+        my $table = shift;
+        my $query =
+          $dbh->prepare("SELECT * FROM $Jora::Config::Config{$table}");
         $query->execute() or croak "Can't execute statement: $DBI::errstr";
 
         my $retval;
@@ -33,41 +72,24 @@ sub get_tasks {
         return $retval;
 }
 
-sub get_task_info {
-        my $name  = shift;
-        my $query = $dbh->prepare(
-"SELECT * FROM $Jora::Config::Config{'sqlite.tasks'} WHERE name = '$name'"
-        );
-        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+sub get_all_tasks {
+        return get_all_entities("sqlite.tasks");
+}
 
-        return ( $name, $query->fetchrow_hashref );
+sub get_task_info {
+        return get_entity_info( shift, "name", "sqlite.tasks" );
 }
 
 sub task_exists {
-        return [ get_task_info(shift) ]->[1];
+        return entity_exists( shift, "name", "sqlite.tasks" );
 }
 
 sub create_task {
-        my $task = shift;
-        my $query =
-          $dbh->prepare( "INSERT INTO $Jora::Config::Config{'sqlite.tasks'}("
-                  . ( join ", ", keys %$task )
-                  . ") VALUES ("
-                  . ( join ", ", map { "'$_'" } values %$task )
-                  . ")" );
-        $query->execute() or croak "Can't execute statement: $DBI::errstr";
+        return create_entity( shift, "sqlite.tasks" );
 }
 
 sub delete_task {
-        my $name = shift;
-
-        task_exists($name) or croak "Task doesn't exist.";
-
-        my $query = $dbh->prepare(
-"DELETE FROM $Jora::Config::Config{'sqlite.tasks'} WHERE name = '$name'"
-        );
-        $query->execute() or croak "Can't execute statement: $DBI::errstr";
-
+        return delete_entity( shift, "name", "sqlite.tasks" );
 }
 
 sub modify_task {
