@@ -23,7 +23,7 @@ has [ 'subject', 'description' ] => (
 );
 
 has ['assigned_user_id'] => (
-        is  => 'rw',
+        is  => 'ro',
         isa => 'Maybe[Int]',
 );
 
