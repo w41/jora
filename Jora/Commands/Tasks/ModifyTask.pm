@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-package Jora::Commands::ModifyTask;
+package Jora::Commands::Tasks::ModifyTask;
 
 use strict;
 use warnings;

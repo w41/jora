@@ -1,10 +1,13 @@
 #!/usr/bin/perl
+package Jora::Commands::Tasks::DeleteTask;
 
-package Jora::Commands::GetTaskInfo;
+use strict;
+use warnings;
 
 use Moose;
-use Data::Dumper;
 use Jora::Sqlite;
+use Getopt::Long qw/GetOptionsFromArray/;
+use Data::Dumper;
 
 extends 'Jora::Commands::Command';
 
@@ -16,14 +19,12 @@ has 'name' => (
 
 around BUILDARGS => sub {
         my ( $orig, $class, $argv ) = ( shift, shift, shift );
-        return $class->$orig( @_, name => shift @$argv );
+        return $class->$orig( @_, name => shift $argv );
 };
 
 sub execute {
-        my $self   = shift;
-        my @retval = Jora::Sqlite::get_task_info( $self->{name} );
-        print Dumper(@retval);
-        return @retval;
+        my $self = shift;
+        Jora::Sqlite::delete_task( $self->name );
 }
 
 1;

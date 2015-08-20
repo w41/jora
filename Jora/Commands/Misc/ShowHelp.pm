@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-package Jora::Commands::ShowHelp;
+package Jora::Commands::Misc::ShowHelp;
 
 use strict;
 use warnings;

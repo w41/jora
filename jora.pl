@@ -4,11 +4,11 @@ use v5.14;
 
 use Getopt::Long qw(GetOptions);
 use Jora::Commands::Command;
-use Jora::Commands::CreateTask;
-use Jora::Commands::DeleteTask;
-use Jora::Commands::ModifyTask;
-use Jora::Commands::GetTaskInfo;
-use Jora::Commands::ShowHelp;
+use Jora::Commands::Tasks::CreateTask;
+use Jora::Commands::Tasks::DeleteTask;
+use Jora::Commands::Tasks::ModifyTask;
+use Jora::Commands::Tasks::GetTaskInfo;
+use Jora::Commands::Misc::ShowHelp;
 use Data::Dumper;
 use Moose;
 use Carp;
@@ -21,12 +21,12 @@ Jora::Sqlite->initialize();
 
 my %commands = (
         "task" => {
-                "create" => Jora::Commands::CreateTask->meta(),
-                "delete" => Jora::Commands::DeleteTask->meta(),
-                "modify" => Jora::Commands::ModifyTask->meta(),
-                "info"   => Jora::Commands::GetTaskInfo->meta(),
+                "create" => Jora::Commands::Tasks::CreateTask->meta(),
+                "delete" => Jora::Commands::Tasks::DeleteTask->meta(),
+                "modify" => Jora::Commands::Tasks::ModifyTask->meta(),
+                "info"   => Jora::Commands::Tasks::GetTaskInfo->meta(),
         },
-        "help" => Jora::Commands::ShowHelp->meta(),
+        "help" => Jora::Commands::Misc::ShowHelp->meta(),
 );
 
 my $cmd_or_category;

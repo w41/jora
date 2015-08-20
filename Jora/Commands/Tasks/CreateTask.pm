@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-package Jora::Commands::CreateTask;
+package Jora::Commands::Tasks::CreateTask;
 
 use strict;
 use warnings;
