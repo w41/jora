@@ -16,7 +16,7 @@ our %Config;
 #	$cfg->write("jora.cfg");
 #}
 
-sub initialize {
+INIT {
         Config::Simple->import_from( "jora.cfg", \%Config );
 }
 

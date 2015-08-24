@@ -15,10 +15,8 @@ use Moose;
 use Carp;
 use Jora::Config;
 use Jora::Sqlite;
+use Jora::Sqlite::Entities;
 use Scalar::Util;
-
-Jora::Config->initialize();
-Jora::Sqlite->initialize();
 
 my %commands = (
         "task" => {

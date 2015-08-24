@@ -3,18 +3,22 @@ use warnings;
 use Test::More;
 use Test::Fatal qw/dies_ok/;
 
+BEGIN {
+        `./install.sh`;
+        is( $?, 0, "perform clean install" );
+}
+
 use Jora::Commands::Tasks::CreateTask;
 use Jora::Commands::Tasks::DeleteTask;
 use Jora::Commands::Tasks::ModifyTask;
 use Jora::Commands::Tasks::GetTaskInfo;
+use Jora::Commands::Users::CreateUser;
 use Jora::Config;
 use Jora::Sqlite;
+use Jora::Sqlite::Entities;
 
-`./install.sh`;
-is( $?, 0, "perform clean install" );
-
-Jora::Config->initialize;
-Jora::Sqlite->initialize;
+Jora::Commands::Users::CreateUser->new( [ split ' ', 'TEST' ], id => 1 )
+  ->execute;
 
 my $result = 1;
 for ( 1 .. 100 ) {
