@@ -10,6 +10,7 @@ use Jora::Commands::Tasks::ModifyTask;
 use Jora::Commands::Tasks::GetTaskInfo;
 use Jora::Commands::Misc::ShowHelp;
 use Jora::Commands::Users::CreateUser;
+use Jora::Commands::Users::DeleteUser;
 use Data::Dumper;
 use Moose;
 use Carp;
@@ -27,6 +28,7 @@ my %commands = (
         },
         "user" => {
                 "create" => Jora::Commands::Users::CreateUser->meta(),
+                "delete" => Jora::Commands::Users::DeleteUser->meta(),
         },
         "help" => Jora::Commands::Misc::ShowHelp->meta(),
 );

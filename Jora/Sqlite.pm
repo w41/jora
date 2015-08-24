@@ -29,8 +29,8 @@ sub create_task {
                 $task,
                 "sqlite.tasks",
                 sub {
-			task_exists($task)	
-			and croak("Task $task->{name} already exists.");
+                        task_exists($task)
+                          and croak("Task $task->{name} already exists.");
                         $task->{assigned_user_id}
                           && !user_id_exists( $task->{assigned_user_id} )
                           and croak(
@@ -46,6 +46,11 @@ sub create_task {
 sub delete_task {
         return Jora::Sqlite::Entities::delete_entity( shift, "name",
                 "sqlite.tasks" );
+}
+
+sub delete_user {
+        return Jora::Sqlite::Entities::delete_entity( shift, "login",
+                "sqlite.users" );
 }
 
 sub modify_task {
@@ -72,8 +77,15 @@ sub modify_task {
 }
 
 sub create_user {
-	my $user = shift;
-        return Jora::Sqlite::Entities::create_entity( $user, "sqlite.users", sub { user_login_exists($user->{login}) and croak("User $user->{login} already exists.") } );
+        my $user = shift;
+        return Jora::Sqlite::Entities::create_entity(
+                $user,
+                "sqlite.users",
+                sub {
+                        user_login_exists( $user->{login} )
+                          and croak("User $user->{login} already exists.");
+                }
+        );
 }
 
 sub user_id_exists {
