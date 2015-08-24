@@ -23,21 +23,21 @@ Jora::Commands::Users::CreateUser->new( [ split ' ', 'TEST' ], id => 1 )
 my $result = 1;
 for ( 1 .. 100 ) {
         $result &&= Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST' . $_ . ' -a 15' ],
+                [ split ' ', 'TEST' . $_ . ' -a 1' ],
                 id => 1 )->execute;
 }
 
 ok( $result, "add 100 tasks" );
 
 dies_ok {
-        Jora::Commands::Tasks::CreateTask->new( [ split ' ', 'TEST7 -a 15' ],
+        Jora::Commands::Tasks::CreateTask->new( [ split ' ', 'TEST7 -a 1' ],
                 id => 1 )->execute,
           "add duplicate task"
 };
 
 dies_ok {
-        Jora::Commands::Tasks::CreateTask->new( [ split ' ', '-a 15' ],
-                id => 1 )->execute,
+        Jora::Commands::Tasks::CreateTask->new( [ split ' ', '-a 1' ], id => 1 )
+          ->execute,
           "add nameless task"
 };
 
@@ -67,7 +67,7 @@ dies_ok {
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 -s TEST' ],
+                [ split ' ', 'TEST -a 1 -s TEST' ],
                 id => 1 )->execute,
         "add task with subject"
 );
@@ -81,7 +81,7 @@ ok(
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 --subj TEST' ],
+                [ split ' ', 'TEST -a 1 --subj TEST' ],
                 id => 1 )->execute,
         "add task with subject"
 );
@@ -95,7 +95,7 @@ ok(
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 --subject TEST' ],
+                [ split ' ', 'TEST -a 1 --subject TEST' ],
                 id => 1 )->execute,
         "add task with subject"
 );
@@ -109,7 +109,7 @@ ok(
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 -d TEST' ],
+                [ split ' ', 'TEST -a 1 -d TEST' ],
                 id => 1 )->execute,
         "add task with description"
 );
@@ -123,7 +123,7 @@ ok(
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 --desc TEST' ],
+                [ split ' ', 'TEST -a 1 --desc TEST' ],
                 id => 1 )->execute,
         "add task with description"
 );
@@ -137,7 +137,7 @@ ok(
 
 ok(
         Jora::Commands::Tasks::CreateTask->new(
-                [ split ' ', 'TEST -a 15 --description TEST' ],
+                [ split ' ', 'TEST -a 1 --description TEST' ],
                 id => 1 )->execute,
         "add task with description"
 );
@@ -156,20 +156,20 @@ dies_ok {
 };
 
 dies_ok {
-        Jora::Commands::Tasks::ModifyTask->new( [ split ' ', '-a 15' ],
-                id => 1 )->execute,
+        Jora::Commands::Tasks::ModifyTask->new( [ split ' ', '-a 1' ], id => 1 )
+          ->execute,
           "modify nameless task"
 };
 
 Jora::Commands::Tasks::CreateTask->new(
         [
                 split ' ',
-'MODIFY_TEST -a 15 -u 1 --subj MODIFY_TEST --description MODIFY_TEST'
+'MODIFY_TEST -a 1 -u 1 --subj MODIFY_TEST --description MODIFY_TEST'
         ],
         id => 1
 )->execute;
 
-Jora::Commands::Tasks::ModifyTask->new( [ split ' ', 'MODIFY_TEST -a 16' ],
+Jora::Commands::Tasks::ModifyTask->new( [ split ' ', 'MODIFY_TEST -a 1' ],
         id => 1 )->execute;
 
 is(
@@ -180,11 +180,11 @@ is(
                                 id => 1 )->execute
                 ]->[1]
           }{author_id},
-        16,
+        1,
         "modify task author id"
 );
 
-Jora::Commands::Tasks::ModifyTask->new( [ split ' ', 'MODIFY_TEST -u 16' ],
+Jora::Commands::Tasks::ModifyTask->new( [ split ' ', 'MODIFY_TEST -u 1' ],
         id => 1 )->execute;
 
 is(
@@ -195,7 +195,7 @@ is(
                                 id => 1 )->execute
                 ]->[1]
           }{assigned_user_id},
-        16,
+        1,
         "modify task assigned user id"
 );
 
@@ -233,7 +233,7 @@ is(
 Jora::Commands::Tasks::CreateTask->new(
         [
                 split ' ',
-'MODIFY_TEST2 -a 15 -u 1 --subj MODIFY_TEST2 --description MODIFY_TEST2'
+'MODIFY_TEST2 -a 1 -u 1 --subj MODIFY_TEST2 --description MODIFY_TEST2'
         ],
         id => 1
 )->execute;
