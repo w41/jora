@@ -19,7 +19,7 @@ has 'login' => (
 
 around BUILDARGS => sub {
         my ( $orig, $class, $argv ) = ( shift, shift, shift );
-        return $class->$orig( @_, login => shift $argv );
+        return $class->$orig( @_, login => shift @$argv );
 };
 
 sub execute {

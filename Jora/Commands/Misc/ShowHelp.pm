@@ -16,7 +16,7 @@ has 'cmd' => (
 
 around BUILDARGS => sub {
         my ( $orig, $class, $argv ) = ( shift, shift, shift );
-        return $class->$orig( @_, cmd => shift $argv );
+        return $class->$orig( @_, cmd => shift @$argv );
 };
 
 sub execute {
